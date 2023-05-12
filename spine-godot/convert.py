@@ -24,15 +24,15 @@ def convert_json(filename):
     file = codecs.open(filename, "r", "utf-8")
     content = file.read()
     file.close()
-    
+
     if "skeleton" in content and "hash" in content and "spine" in content:
         path = pathlib.Path(filename)
         new_path = path.with_suffix('.spine-json')
-        print("Renaming " + str(path) + " to " + str(new_path))
+        print(f"Renaming {str(path)} to {str(new_path)}")
         path.rename(new_path)
-        if os.path.exists(filename + ".import"):
-            print("Removing " + str(filename) + ".import")
-            os.remove(filename + ".import")
+        if os.path.exists(f"{filename}.import"):
+            print(f"Removing {str(filename)}.import")
+            os.remove(f"{filename}.import")
 
 def convert_tscn_or_tres(filename):    
     file = codecs.open(filename, "r", "utf-8")
@@ -44,7 +44,7 @@ def convert_tscn_or_tres(filename):
     for line in content.splitlines(True):
         if line.startswith("[ext_resource") and 'type="SpineSkeletonFileResource"' in line and '.json"' in line:
             if not is_converted:
-                print("Converting TSCN file " + str(filename))
+                print(f"Converting TSCN file {str(filename)}")
                 is_converted = True
             print("Replacing .json with .spine-json in \n" + line)
             line = line.replace('.json"', '.spine-json"')
@@ -55,9 +55,8 @@ def convert_tscn_or_tres(filename):
     file.close()
 
 def convert_tres(filename):
-    print("Converting TRES file " + str(filename))
-    with open(filename) as file:
-        content = file.read()
+    print(f"Converting TRES file {str(filename)}")
+    content = pathlib.Path(filename).read_text()
 
 def convert(path):
     for dirpath, dirs, files in os.walk(path):	
@@ -74,10 +73,10 @@ if __name__ == "__main__":
         sys.exit(-1)
     path = os.path.abspath(sys.argv[1])
     if not os.path.exists(path):
-        print("Directory " + str(path) + " does not exist.")
+        print(f"Directory {str(path)} does not exist.")
         sys.exit(-1)
     if not os.path.isdir(path):
-        print(str(path) + " is not a directory.")
+        print(f"{str(path)} is not a directory.")
         sys.exit(-1)
-    print("Converting " + str(path))
+    print(f"Converting {str(path)}")
     convert(path)    
